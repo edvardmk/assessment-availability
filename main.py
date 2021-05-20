@@ -3,7 +3,7 @@ from typing import Optional
 
 from fastapi import HTTPException, FastAPI, status
 
-from availability import dataset, Summary
+from availability import Dataset, Summary
 
 app = FastAPI()
 
@@ -32,7 +32,7 @@ def parse_date(date_string: Optional[str]) -> Optional[datetime]:
 @app.get("/summary", response_model=Summary,  status_code=200)
 def get_summary(start_date: Optional[str] = None, end_date: Optional[str] = None):
     """
-    Generates an summary for from data between the optionally provided dates
+    Generates an summary from data between the optionally provided dates
 
     Parameters:
         start_date (str, optional): Start date string of date range to parse, required format: dd.mm.yyyy
@@ -53,17 +53,10 @@ def get_summary(start_date: Optional[str] = None, end_date: Optional[str] = None
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid date range.")
 
     # generates summary from the dataset module for the optionally provided dates
-    summary = dataset.get_summary(start_date=start_date, end_date=end_date)
+    summary = Dataset().get_summary(start_date=start_date, end_date=end_date)
 
     if summary is None:
         # raises 404 if no data found within the provided bounds
-        exxx = HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No data found."
-        )
-        print(exxx)
-        print('aww man')
-        print(exxx.status_code)
-
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="No data found."
         )

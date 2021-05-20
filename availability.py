@@ -5,8 +5,6 @@ import sqlite3
 import pandas as pd
 from pydantic import BaseModel
 
-xxx = 123
-
 
 class Summary(BaseModel):
     """
@@ -19,12 +17,9 @@ class Summary(BaseModel):
     min: float
 
 
-con = sqlite3.connect('availability.db')
-
-
 class Dataset():
     """
-    A class to acces a SQLite database and provide optionally filtered summaries
+    A class to access an SQLite database and provide optionally filtered summaries
 
     Attributes:
         df (DataFrame): Database content as pandas dataframe
@@ -34,6 +29,7 @@ class Dataset():
     """
 
     def __init__(self):
+        con = sqlite3.connect('availability.db')
         self.df = pd.read_sql_query(
             "SELECT * FROM service_availabilities", con, parse_dates=['date']
         )
@@ -69,6 +65,3 @@ class Dataset():
             "max": ava.max(),
             "min": ava.min()
         }
-
-
-dataset = Dataset()
